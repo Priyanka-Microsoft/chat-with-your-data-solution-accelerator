@@ -23,6 +23,8 @@ on:
         required: false
       DEV_DOCKER_PASSWORD:
         required: false
+      DOCKER_PASSWORD_SEC:
+        required: false
 
 jobs:
   docker-build:
@@ -31,13 +33,22 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Docker Login
-      if: ${{ inputs.push == true && github.ref_name == 'main' }}
+    - name: Docker Login (Production)
+      if: ${{ inputs.push == true && github.ref_name == 'main' && inputs.registry == 'cwydcontainerregpk.azurecr.io' }}
       uses: docker/login-action@v3
       with:
         registry: ${{ inputs.registry }}
         username: ${{ inputs.username }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # Docker Login for Secondary Production Registry (cwydcontainerreg) for 'main' branch
+    - name: Docker Login (Secondary Production)
+      if: ${{ inputs.push == true && github.ref_name == 'main' && inputs.registry == 'pslpricwydregistry.azurecr.io' }}
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.username }}
+        password: ${{ secrets.DOCKER_PASSWORD_SEC }}
 
     - name: Dev Docker Login
       if: ${{ inputs.push == true && (github.ref_name == 'dev' || github.ref_name == 'demo') }}
