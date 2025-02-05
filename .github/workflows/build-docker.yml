@@ -27,36 +27,29 @@ on:
         required: false
 
 jobs:
-  # Main registry login and build (parallel)
-  main-registry-docker-build:
+  docker-build-main:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        registry: 
-          - 'cwydcontainerregpk.azurecr.io'
-          - 'pslpricwydregistry.azurecr.io'
-    if: ${{ inputs.push == true && github.ref_name == 'main' }}
-    
+    if: ${{ github.ref_name == 'main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Docker Login for cwydcontainerregpk.azurecr.io
-        if: ${{ matrix.registry == 'cwydcontainerregpk.azurecr.io' }}
+      - name: Docker Login for pslpricwydregistry
+        if: ${{ inputs.push == true && github.ref_name == 'main' }}
         uses: docker/login-action@v3
         with:
-          registry: ${{ matrix.registry }}
-          username: ${{ inputs.username }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Docker Login for pslpricwydregistry.azurecr.io
-        if: ${{ matrix.registry == 'pslpricwydregistry.azurecr.io' }}
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ matrix.registry }}
+          registry: pslpricwydregistry
           username: ${{ inputs.username }}
           password: ${{ secrets.DOCKER_PASSWORD_SEC }}
 
+      - name: Docker Login for cwydcontainerregpk
+        if: ${{ inputs.push == true && github.ref_name == 'main' }}
+        uses: docker/login-action@v3
+        with:
+          registry: cwydcontainerregpk
+          username: ${{ inputs.username }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -64,35 +57,42 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
-      - name: Build Docker Image and optionally push
+      - name: Build Docker Image and push to pslpricwydregistry
+        if: ${{ inputs.push == true && github.ref_name == 'main' }}
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ${{ inputs.dockerfile }}
-          push: ${{ inputs.push }}
-          cache-from: type=registry,ref=${{ matrix.registry }}/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || github.ref_name }}
+          push: true
           tags: |
-            ${{ matrix.registry }}/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || 'default' }}
-            ${{ matrix.registry }}/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
+            pslpricwydregistry/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || 'default' }}
+            pslpricwydregistry/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
 
-  # Dev/Demo Docker login and build (sequential)
-  dev-demo-docker-build:
+      - name: Build Docker Image and push to cwydcontainerregpk
+        if: ${{ inputs.push == true && github.ref_name == 'main' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          push: true
+          tags: |
+            cwydcontainerregpk/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || 'default' }}
+            cwydcontainerregpk/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
+
+  docker-build-dev-demo:
     runs-on: ubuntu-latest
     if: ${{ inputs.push == true && (github.ref_name == 'dev' || github.ref_name == 'demo') }}
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Dev/Demo Docker Login
+      - name: Docker Login for cwydcontainerregpk
+        if: ${{ inputs.push == true && (github.ref_name == 'dev' || github.ref_name == 'demo') }}
         uses: docker/login-action@v3
         with:
-          registry: ${{ inputs.registry }}
+          registry: cwydcontainerregpk
           username: ${{ inputs.username }}
           password: ${{ secrets.DEV_DOCKER_PASSWORD }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Get current date
         id: date
@@ -104,7 +104,17 @@ jobs:
           context: .
           file: ${{ inputs.dockerfile }}
           push: ${{ inputs.push }}
-          cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || github.ref_name }}
+          cache-from: type=registry,ref=cwydcontainerregpk/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || github.ref_name }}
           tags: |
-            ${{ inputs.registry }}/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || 'default' }}
-            ${{ inputs.registry }}/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
+            cwydcontainerregpk/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || 'default' }}
+            cwydcontainerregpk/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
+
+      - name: Build Docker Image and push to cwydcontainerregpk
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          push: true
+          tags: |
+            cwydcontainerregpk/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || 'default' }}
+            cwydcontainerregpk/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
