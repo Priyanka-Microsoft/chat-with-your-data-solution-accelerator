@@ -31,8 +31,8 @@ jobs:
             dockerfile: docker/Frontend.Dockerfile
     uses: ./.github/workflows/build-docker.yml
     with:
-      registry: ${{ github.ref_name == 'main' && 'cwydcontainerregpk.azurecr.io' || github.ref_name == 'main' && 'pslpricwydregistry.azurecr.io' || github.ref_name == 'dev' || github.ref_name == 'demo' && 'cwydcontainerreg.azurecr.io' }}
-      username: ${{ github.ref_name == 'main' && 'cwydcontainerregpk' || 'pslpricwydregistry'}}
+      registry: ${{ github.ref_name == 'main' && (github.head_ref == 'main' && 'pslpricwydregistry.azurecr.io' || 'cwydcontainerregpk.azurecr.io') || github.ref_name == 'dev' || github.ref_name == 'demo' && 'cwydcontainerreg.azurecr.io' }}
+      username: ${{ github.ref_name == 'main' && (github.head_ref == 'main' && 'pslpricwydregistry' || 'cwydcontainerregpk') || 'cwydcontainerreg' }}
       app_name: ${{ matrix.app_name }}
       dockerfile: ${{ matrix.dockerfile }}
       push: ${{ github.ref_name == 'main' || github.ref_name == 'dev' || github.ref_name == 'demo' }}
