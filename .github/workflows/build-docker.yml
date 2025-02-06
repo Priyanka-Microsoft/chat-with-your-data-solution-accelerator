@@ -39,7 +39,7 @@ jobs:
       uses: docker/login-action@v3
       with:
         registry: pslpricwydregistry.azurecr.io
-        username: ${{ inputs.username }}
+        username: pslpricwydregistry
         password: ${{ secrets.DOCKER_PASSWORD_SEC }}
 
     - name: Docker Login to cwydcontainerregpk (Main)
@@ -47,7 +47,7 @@ jobs:
       uses: docker/login-action@v3
       with:
         registry: cwydcontainerregpk.azurecr.io
-        username: ${{ inputs.username }}
+        username: cwydcontainerregpk
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # Login for 'dev' and 'demo' branches to cwydcontainerregpk only
