@@ -82,7 +82,7 @@ jobs:
         tags: |
           ${{ inputs.old_registry }}/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || 'default' }}
           ${{ inputs.old_registry }}/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
-      if: ${{ github.ref_name == 'main' }}
+      if: ${{ github.ref_name == 'main' }}  # Only for main branch
     
     - name: Build Docker Image and optionally push (New Registry)
       uses: docker/build-push-action@v6
@@ -94,4 +94,5 @@ jobs:
         tags: |
           ${{ inputs.new_registry }}/${{ inputs.app_name }}:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'dev' && 'dev' || github.ref_name == 'demo' && 'demo' || github.head_ref || 'default' }}
           ${{ inputs.new_registry }}/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
+      if: ${{ github.ref_name == 'main' || github.ref_name == 'dev' || github.ref_name == 'demo' }}
     
