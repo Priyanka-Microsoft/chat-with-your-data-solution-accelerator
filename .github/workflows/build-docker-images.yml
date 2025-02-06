@@ -31,9 +31,19 @@ jobs:
             dockerfile: docker/Frontend.Dockerfile
     uses: ./.github/workflows/build-docker.yml
     with:
-      registry: ${{ github.ref_name == 'main' && (github.head_ref == 'main' && 'pslpricwydregistry.azurecr.io' || 'cwydcontainerregpk.azurecr.io') || github.ref_name == 'dev' || github.ref_name == 'demo' && 'cwydcontainerreg.azurecr.io' }}
-      username: ${{ github.ref_name == 'main' && (github.head_ref == 'main' && 'pslpricwydregistry' || 'cwydcontainerregpk') || 'cwydcontainerreg' }}
+      # Use a multi-line format for conditional registry assignment
+      registry: |
+        ${{ github.ref_name == 'main' && 'pslpricwydregistry.azurecr.io,cwydcontainerregpk.azurecr.io' || 'cwydcontainerregpk.azurecr.io' }}
+
+      # Define username dynamically based on the branch using multi-line syntax
+      username: |
+        ${{ github.ref_name == 'main' && 'pslpricwydregistry' || 'cwydcontainerregpk' }}
+      
+      # Pass the app name and dockerfile paths based on the matrix configuration
       app_name: ${{ matrix.app_name }}
       dockerfile: ${{ matrix.dockerfile }}
+      
+      # Set push condition for all branches
       push: ${{ github.ref_name == 'main' || github.ref_name == 'dev' || github.ref_name == 'demo' }}
+      
     secrets: inherit
