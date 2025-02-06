@@ -84,7 +84,7 @@ jobs:
           ${{ inputs.old_registry }}/${{ inputs.app_name }}:${{ steps.date.outputs.date }}_${{ github.run_number }}
       if: ${{ github.ref_name == 'main' }} 
     
-    - name: Build Docker Image and optionally push (New Registry)
+    - name: Build Docker Image and optionally push (New1 Registry)
       uses: docker/build-push-action@v6
       with:
         context: .
