@@ -32,9 +32,9 @@ jobs:
     uses: ./.github/workflows/build-docker.yml
     with:
       old_registry: ${{ github.ref_name == 'main' && 'pslpricwydregistry.azurecr.io' }}
-      new_registry: ${{ github.ref_name == 'main' && 'cwydcontainerregpk.azurecr.io' || (github.ref_name == 'dev' || github.ref_name == 'demo') && 'cwydcontainerregpk.azurecr.io' }}
+      new_registry: 'cwydcontainerregpk.azurecr.io'
       old_username: ${{ github.ref_name == 'main' && 'pslpricwydregistry' }}
-      new_username: ${{ github.ref_name == 'main' && 'cwydcontainerregpk' || (github.ref_name == 'dev' || github.ref_name == 'demo') && 'cwydcontainerregpk' }}
+      new_username: 'cwydcontainerregpk'
       app_name: ${{ matrix.app_name }}
       dockerfile: ${{ matrix.dockerfile }}
       push: ${{ github.ref_name == 'main' || github.ref_name == 'dev' || github.ref_name == 'demo' }}
