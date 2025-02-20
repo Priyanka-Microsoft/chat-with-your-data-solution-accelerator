@@ -1,4 +1,4 @@
-name: CI
+name: Validate Deployment
 
 on:
   push:
@@ -28,6 +28,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Run Quota Check
+        id: quota-check
+        run: |
+          chmod +x check_quota.sh
+          if ! ./check_quota.sh; then
+            echo "QUOTA_FAILED=true" >> $GITHUB_ENV
+            exit 1  # Fail the job if quota check fails
+          fi
+
+      - name: Send Notification on Quota Failure
+        if: env.QUOTA_FAILED == 'true'
+        run: |
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          EMAIL_BODY=$(cat <<EOF
+          {
+            "body": "<p>Dear Team,</p><p>The quota check has failed, and the pipeline cannot proceed.</p><p><strong>Build URL:</strong> ${RUN_URL}</p><p>Please take necessary action.</p><p>Best regards,<br>Your Automation Team</p>"
+          }
+          EOF
+          )
+
+          curl -X POST "${{ secrets.LOGIC_APP_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "$EMAIL_BODY" || echo "Failed to send notification"
+
+        # The pipeline stops here if quota check fails!
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -83,7 +109,7 @@ jobs:
             AZURE_SUBSCRIPTION_ID
             AZURE_ENV_NAME
             AZURE_LOCATION
-            
+
       - name: Send Notification on Failure
         if: failure()
         run: |
