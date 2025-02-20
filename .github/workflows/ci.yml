@@ -37,7 +37,7 @@ jobs:
         id: quota-check
         run: |
           chmod +x scripts/checkquota.sh
-          if ! scripts/check_quota.sh; then
+          if ! scripts/checkquota.sh; then
             echo "QUOTA_FAILED=true" >> $GITHUB_ENV
             exit 1  # Fail the job if quota check fails
           fi
