@@ -12,10 +12,10 @@ TEXT_EMBEDDING_MIN_CAPACITY="130"
 
 #Authenticate using Managed Identity
 echo "Authentication using Managed Identity..."
-# if ! az login --identity; then
-#    echo "Error: Failed to login using Managed Identity."
-#    exit 1
-# fi
+if ! az login --identity; then
+   echo "Error: Failed to login using Managed Identity."
+   exit 1
+fi
 
 
 echo "🔄 Validating required environment variables..."
