@@ -25,7 +25,7 @@ if [[ -z "$SUBSCRIPTION_ID" || -z "$GPT_MIN_CAPACITY" || -z "$TEXT_EMBEDDING_MIN
 fi
 
 echo "🔄 Setting Azure subscription..."
-if ! az account set --subscription "$SUBSCRIPTION_ID"; then
+if ! az account set --subscription "1d5876cd-7603-407a-96d2-ae5ca9a9c5f3"; then
     echo "❌ ERROR: Invalid subscription ID or insufficient permissions."
     exit 1
 fi
