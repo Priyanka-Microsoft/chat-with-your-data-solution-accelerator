@@ -9,7 +9,7 @@ TEXT_EMBEDDING_MIN_CAPACITY=130
 
 # Authenticate using Managed Identity
 echo "Authentication using Managed Identity..."
-if ! az login --identity; then
+if ! az login --identity --username '8bf2c8ff-868a-4e1f-b565-b3ce61458fe3'; then
    echo "❌ Error: Failed to login using Managed Identity."
    exit 1
 fi
