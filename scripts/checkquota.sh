@@ -8,11 +8,11 @@ GPT_MIN_CAPACITY=30
 TEXT_EMBEDDING_MIN_CAPACITY=130
 
 # Authenticate using Managed Identity
-# echo "Authentication using Managed Identity..."
-# if ! az login --identity; then
-#    echo "❌ Error: Failed to login using Managed Identity."
-#    exit 1
-# fi
+echo "Authentication using Managed Identity..."
+if ! az login --identity; then
+   echo "❌ Error: Failed to login using Managed Identity."
+   exit 1
+fi
 
 echo "🔄 Validating required environment variables..."
 if [[ -z "$SUBSCRIPTION_ID" || -z "$GPT_MIN_CAPACITY" || -z "$TEXT_EMBEDDING_MIN_CAPACITY" ]]; then
