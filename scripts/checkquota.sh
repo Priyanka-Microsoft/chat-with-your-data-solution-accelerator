@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # List of Azure regions to check for quota (update as needed)
-REGIONS=("eastus2")
+REGIONS=("eastus2" "westus" "centralus" "uksouth" "francecentral")
 
-SUBSCRIPTION_ID="1d5876cd-7603-407a-96d2-ae5ca9a9c5f3"
-GPT_MIN_CAPACITY=30
-TEXT_EMBEDDING_MIN_CAPACITY=130
+SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID}"
+GPT_MIN_CAPACITY="${GPT_MIN_CAPACITY}"
+TEXT_EMBEDDING_MIN_CAPACITY="${TEXT_EMBEDDING_MIN_CAPACITY}"
 
 # Authenticate using Managed Identity
 echo "Authentication using Managed Identity..."

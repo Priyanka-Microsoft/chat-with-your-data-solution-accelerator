@@ -47,7 +47,7 @@ jobs:
           chmod +x scripts/checkquota.sh
           if ! scripts/checkquota.sh; then
             echo "QUOTA_FAILED=true" >> $GITHUB_ENV
-            exit 0  # Stop pipeline if quota check fails
+            exit 0
           fi
 
       - name: Send Notification on Quota Failure
