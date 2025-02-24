@@ -28,6 +28,9 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_LOCATION: 'eastus'
+      GPT_MIN_CAPACITY: '130'
+      TEXT_EMBEDDING_MIN_CAPACITY: '30'
 
     steps:
       - name: Checkout code
@@ -36,11 +39,21 @@ jobs:
       - name: Run Quota Check
         id: quota-check
         run: |
+          export AZURE_SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+          export AZURE_LOCATION="eastus"
+          export GPT_MIN_CAPACITY="130"
+          export TEXT_EMBEDDING_MIN_CAPACITY="30"
+
           chmod +x scripts/checkquota.sh
           if ! scripts/checkquota.sh; then
             echo "QUOTA_FAILED=true" >> $GITHUB_ENV
             exit 1  # Fail the job if quota check fails
           fi
+
+      - name: Set Deployment Region
+        run: |
+          echo "Selected Region: $VALID_REGION"
+          echo "AZURE_LOCATION=$VALID_REGION" >> $GITHUB_ENV
 
       - name: Send Notification on Quota Failure
         if: env.QUOTA_FAILED == 'true'
@@ -81,7 +94,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         env:
           AZURE_ENV_NAME: ${{ github.run_id }}
-          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          AZURE_LOCATION: ${{ env.AZURE_LOCATION }}
         with:
           imageName: ghcr.io/azure-samples/chat-with-your-data-solution-accelerator
           cacheFrom: ghcr.io/azure-samples/chat-with-your-data-solution-accelerator
