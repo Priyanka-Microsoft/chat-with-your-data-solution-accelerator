@@ -86,7 +86,7 @@ done
 if [ -z "$VALID_REGION" ]; then
     echo "❌ No region with sufficient quota found. Blocking deployment."
     echo "QUOTA_FAILED=true" >> "$GITHUB_ENV"
-    exit 1
+    exit 0
 else
     echo "✅ Suggested Region: $VALID_REGION"
     echo "VALID_REGION=$VALID_REGION" >> "$GITHUB_ENV"
