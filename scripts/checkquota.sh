@@ -7,7 +7,7 @@
 # Debugging - Print the raw value of REGIONS
 echo "🔍 Debug - Raw REGIONS value: '$REGIONS'"
 
-IFS=' ' read -r -a REGIONS_ARRAY <<< "$REGIONS"
+IFS=' ' read -ra REGIONS_ARRAY <<< "$REGIONS"
 
 echo "✅ Debug - Converted to array: ${REGIONS_ARRAY[@]}"
 
