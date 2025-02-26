@@ -33,6 +33,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug - Print Regions List
+        run: |
+          echo "Regions: ${{ vars.AZURE_REGIONS }}"
+
       - name: Run Quota Check
         id: quota-check
         run: |
@@ -42,7 +46,7 @@ jobs:
           export AZURE_SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
           export GPT_MIN_CAPACITY="30"
           export TEXT_EMBEDDING_MIN_CAPACITY="30"
-          export REGIONS=${{ vars.REGIONS }}
+          export REGIONS=${{ vars.AZURE_REGIONS }}
 
           chmod +x scripts/checkquota.sh
           if ! scripts/checkquota.sh; then
