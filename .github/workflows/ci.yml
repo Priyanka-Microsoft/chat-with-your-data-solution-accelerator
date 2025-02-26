@@ -46,7 +46,7 @@ jobs:
           export AZURE_SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
           export GPT_MIN_CAPACITY="30"
           export TEXT_EMBEDDING_MIN_CAPACITY="30"
-          export REGIONS="${{ vars.AZURE_REGIONS }}"
+          export AZURE_REGIONS="${{ vars.AZURE_REGIONS }}"
 
           chmod +x scripts/checkquota.sh
           if ! scripts/checkquota.sh; then
