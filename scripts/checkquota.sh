@@ -45,7 +45,7 @@ declare -A MIN_CAPACITY=(
 )
 
 VALID_REGION=""
-for REGION in "${REGIONS[@]}"; do
+for REGION in "${REGIONS_ARRAY[@]}"; do
     echo "----------------------------------------"
     echo "🔍 Checking region: $REGION"
 
