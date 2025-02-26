@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # List of Azure regions to check for quota (update as needed)
-REGIONS=${REGIONS}
+# REGIONS=${REGIONS}
+IFS=' ' read -r -a REGIONS <<< "$REGIONS"
 SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID}"
 GPT_MIN_CAPACITY="${GPT_MIN_CAPACITY}"
 TEXT_EMBEDDING_MIN_CAPACITY="${TEXT_EMBEDDING_MIN_CAPACITY}"
