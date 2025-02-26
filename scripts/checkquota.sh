@@ -1,15 +1,7 @@
 #!/bin/bash
 
 # List of Azure regions to check for quota (update as needed)
-# REGIONS=${REGIONS}
-# IFS=' ' read -r -a REGIONS <<< "$REGIONS"
-
-# Debugging - Print the raw value of REGIONS
-echo "🔍 Debug - Raw REGIONS value: '$REGIONS'"
-
-IFS=' ' read -ra REGIONS_ARRAY <<< "$REGIONS"
-
-echo "✅ Debug - Converted to array: ${REGIONS_ARRAY[@]}"
+IFS=' ' read -ra REGIONS <<< "$AZURE_REGIONS"
 
 SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID}"
 GPT_MIN_CAPACITY="${GPT_MIN_CAPACITY}"
@@ -45,7 +37,7 @@ declare -A MIN_CAPACITY=(
 )
 
 VALID_REGION=""
-for REGION in "${REGIONS_ARRAY[@]}"; do
+for REGION in "${REGIONS[@]}"; do
     echo "----------------------------------------"
     echo "🔍 Checking region: $REGION"
 
@@ -99,7 +91,7 @@ if [ -z "$VALID_REGION" ]; then
     echo "QUOTA_FAILED=true" >> "$GITHUB_ENV"
     exit 0
 else
-    echo "✅ Suggested Region: $VALID_REGION"
+    echo "✅ Final Region: $VALID_REGION"
     echo "VALID_REGION=$VALID_REGION" >> "$GITHUB_ENV"
     exit 0
 fi
