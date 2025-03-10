@@ -28,13 +28,14 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      AZURE_LOCATION: 'eastus'
-      GPT_MIN_CAPACITY: '130'
-      TEXT_EMBEDDING_MIN_CAPACITY: '30'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug - Print Regions List
+        run: |
+          echo "Regions: ${{ vars.AZURE_REGIONS }}"
 
       - name: Run Quota Check
         id: quota-check
@@ -43,8 +44,9 @@ jobs:
           export AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}
           export AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}
           export AZURE_SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-          export GPT_MIN_CAPACITY="130"
+          export GPT_MIN_CAPACITY="30"
           export TEXT_EMBEDDING_MIN_CAPACITY="30"
+          export AZURE_REGIONS="${{ vars.AZURE_REGIONS }}"
 
           chmod +x scripts/checkquota.sh
           if ! scripts/checkquota.sh; then
