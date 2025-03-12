@@ -3,6 +3,7 @@
 # Parameters
 MODEL_NAME="$1"
 CAPACITY="$2"
+USER_REGION="$3"
 
 if [ -z "$MODEL_NAME" ] || [ -z "$CAPACITY" ]; then
     echo "❌ ERROR: Model name and capacity must be provided as arguments."
@@ -30,7 +31,15 @@ fi
 echo "✅ Azure subscription set successfully."
 
 # List of regions to check
-REGIONS=("eastus" "uksouth" "eastus2" "northcentralus" "swedencentral" "westus" "westus2" "southcentralus" "canadacentral")
+DEFAULT_REGIONS=("eastus" "uksouth" "eastus2" "northcentralus" "swedencentral" "westus" "westus2" "southcentralus" "canadacentral")
+
+# Prioritize user-provided region if given
+if [ -n "$USER_REGION" ]; then
+    # Ensure the user-provided region is checked first
+    REGIONS=("$USER_REGION" "${DEFAULT_REGIONS[@]}")
+else
+    REGIONS=("${DEFAULT_REGIONS[@]}")
+fi
 
 echo "✅ Retrieved Azure regions. Checking availability..."
 
