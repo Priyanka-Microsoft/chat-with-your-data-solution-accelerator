@@ -143,11 +143,12 @@ Before deploying the accelerator, check the quota availability for the model to 
     rm -rf chat-with-your-data-solution-accelerator
     git clone https://github.com/Priyanka-Microsoft/chat-with-your-data-solution-accelerator
     cd ./chat-with-your-data-solution-accelerator/scripts
-    sh check_azure_quota_public.sh <model_name> <model_capacity>
+    sh check_azure_quota_public.sh <model_name> <model_capacity> [<model_region>]
     ```
 
     - `<model_name>`: The name of the model that is used in the accelerator (e.g., `gpt-4o`).
     - `<model_capacity>`: The required capacity for the model (e.g., `30`).
+    - `[<model_region>]` (optional): The Azure region to check first. If not provided, all supported regions will be checked (e.g., `eastus`).
 
 If sufficient quota is available, proceed with the deployment.
 
