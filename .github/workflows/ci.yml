@@ -6,12 +6,8 @@ on:
       - main
       - dev
       - demo
-  pull_request:
-    branches:
-      - main
-      - dev
-      - demo
-  workflow_dispatch:  # Runs at 6:00 AM and 6:00 PM GMT
+  schedule:
+    - cron: '0 8,20 * * *'  # Runs at 8:00 AM and 8:00 PM GMT
 
 permissions:
   contents: read
@@ -33,10 +29,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug - Print Regions List
-        run: |
-          echo "Regions: ${{ vars.AZURE_REGIONS }}"
-
+      # Run Quota Check Script
       - name: Run Quota Check
         id: quota-check
         run: |
@@ -76,12 +69,12 @@ jobs:
         if: env.QUOTA_FAILED == 'true'
         run: exit 1
 
+        # The pipeline stops here if quota check fails!
+
       - name: Set Deployment Region
         run: |
           echo "Selected Region: $VALID_REGION"
           echo "AZURE_LOCATION=$VALID_REGION" >> $GITHUB_ENV
-
-        # The pipeline stops here if quota check fails!
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
