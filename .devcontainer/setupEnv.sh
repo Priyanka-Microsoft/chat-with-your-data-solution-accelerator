@@ -5,7 +5,7 @@ pip install --upgrade pip
 pip install --upgrade poetry
 
 # https://pypi.org/project/poetry-plugin-export/
-pip install --upgrade poetry-plugin-export
+pip install poetry-plugin-export
 
 poetry env use python3.11
 
