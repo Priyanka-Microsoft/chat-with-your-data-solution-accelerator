@@ -2,7 +2,7 @@
 
 pip install --upgrade pip
 
-pip install --upgrade poetry
+pip install poetry
 
 # https://pypi.org/project/poetry-plugin-export/
 pip install poetry-plugin-export
