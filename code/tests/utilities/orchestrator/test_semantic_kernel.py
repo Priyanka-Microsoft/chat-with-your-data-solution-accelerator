@@ -424,7 +424,10 @@ async def test_chat_history_included(
 
     # then
     chat_history = kernel_mock.invoke.call_args.kwargs["chat_history"]
+    assert isinstance(chat_history, str)  # or check the actual value
     messages = chat_history.messages
+
+
 
     assert len(messages) == 3
     assert messages[0].role == AuthorRole.SYSTEM
